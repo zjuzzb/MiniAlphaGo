@@ -73,9 +73,9 @@ class Application(Frame):
             (prev_x, prev_y) = self.model.prev_selected
             if (prev_x, prev_y) != (-1, -1):
                 if self.model.player == 1:
-                    icon = self.get_icon(x, y, 1, False)
+                    icon = self.get_icon(prev_x, prev_y, 1, False)
                 else:
-                    icon = self.get_icon(x, y, 0, False)
+                    icon = self.get_icon(prev_x, prev_y, 0, False)
                 self.chessButton[prev_x][prev_y].config(image=icon)
             # store new selected location
             self.model.prev_selected = (x, y)
@@ -103,33 +103,29 @@ class Application(Frame):
             if self.model.player == 1:
                 minutes = int(self.model.time_white / 60)
                 seconds = int(self.model.time_white - minutes * 60.0)
-                self.time_text_white.set('White Total: %.2d:%.2d   Step: %.2d' % (minutes, seconds, self.model.step_time))
+                s_minutes = int(self.model.step_time / 60)
+                s_seconds = int(self.model.step_time - s_minutes * 60.0)
+                self.time_text_black.set('Black Total: %.2d:%.2d   Step: %.2d:%.2d' % (minutes, seconds, s_minutes, s_seconds))
                 self.model.time_white += 1
                 self.model.step_time += 1
                 time.sleep(1)
-                if self.model.step_time >= 60:
-                    msg = messagebox.showwarning('Oops', 'White timeout. Black wins!')
-                    print(msg)
-                    self.initialize()
 
     def update_time_text_black(self):
         while True:
             if self.model.player == -1:
                 minutes = int(self.model.time_black / 60)
                 seconds = int(self.model.time_black - minutes * 60.0)
-                self.time_text_black.set('Black Total: %.2d:%.2d   Step: %.2d' % (minutes, seconds, self.model.step_time))
+                s_minutes = int(self.model.step_time / 60)
+                s_seconds = int(self.model.step_time - s_minutes * 60.0)
+                self.time_text_black.set('Black Total: %.2d:%.2d   Step: %.2d:%.2d' % (minutes, seconds, s_minutes, s_seconds))
                 self.model.time_black += 1
                 self.model.step_time += 1
                 time.sleep(1)
-                if self.model.step_time >= 60:
-                    msg = messagebox.showwarning('Oops', 'Black timeout. White wins!')
-                    print(msg)
-                    self.initialize()
 
     def initialize(self):
         self.model.__init__()
         # initialize components
-        self.chessButton = []
+        self.create_widgets()
         self.time_text_black = StringVar(self, 'Black Total: 00:00   Step: 00')
         self.time_text_white = StringVar(self, 'White Total: 00:00   Step: 00')
         self.player_text = StringVar(self, 'Current Player: Black')
