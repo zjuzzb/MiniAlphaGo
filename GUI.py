@@ -46,8 +46,8 @@ class Application(Frame):
         self.load_icons()
         # initialize components
         self.chessButton = [[Button(self, bd=0, height=80, width=80, bg='#EBCEAC', image=self.cross_icon[2]) for _ in range(9)] for _ in range(9)]
-        self.time_text_black = StringVar(self, 'Black Total: 00:00   Step: 00')
-        self.time_text_white = StringVar(self, 'White Total: 00:00   Step: 00')
+        self.time_text_black = StringVar(self, 'Black Total: 00:00  Step: 00:00')
+        self.time_text_white = StringVar(self, 'White Total: 00:00  Step: 00:00')
         self.player_text = StringVar(self, 'Current Player: Black')
         # load components
         self.create_widgets()
@@ -105,7 +105,7 @@ class Application(Frame):
                 seconds = int(self.model.time_white - minutes * 60.0)
                 s_minutes = int(self.model.step_time / 60)
                 s_seconds = int(self.model.step_time - s_minutes * 60.0)
-                self.time_text_black.set('Black Total: %.2d:%.2d   Step: %.2d:%.2d' % (minutes, seconds, s_minutes, s_seconds))
+                self.time_text_white.set('White Total:%.2d:%.2d  Step:%.2d:%.2d' % (minutes, seconds, s_minutes, s_seconds))
                 self.model.time_white += 1
                 self.model.step_time += 1
                 time.sleep(1)
@@ -117,7 +117,7 @@ class Application(Frame):
                 seconds = int(self.model.time_black - minutes * 60.0)
                 s_minutes = int(self.model.step_time / 60)
                 s_seconds = int(self.model.step_time - s_minutes * 60.0)
-                self.time_text_black.set('Black Total: %.2d:%.2d   Step: %.2d:%.2d' % (minutes, seconds, s_minutes, s_seconds))
+                self.time_text_black.set('Black Total: %.2d:%.2d  Step: %.2d:%.2d' % (minutes, seconds, s_minutes, s_seconds))
                 self.model.time_black += 1
                 self.model.step_time += 1
                 time.sleep(1)
@@ -126,8 +126,8 @@ class Application(Frame):
         self.model.__init__()
         # initialize components
         self.create_widgets()
-        self.time_text_black = StringVar(self, 'Black Total: 00:00   Step: 00')
-        self.time_text_white = StringVar(self, 'White Total: 00:00   Step: 00')
+        self.time_text_black = StringVar(self, 'Black Total: 00:00  Step: 00:00')
+        self.time_text_white = StringVar(self, 'White Total: 00:00  Step: 00:00')
         self.player_text = StringVar(self, 'Current Player: Black')
 
 # 0 for white, 1 for black, 2 for empty
