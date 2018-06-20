@@ -63,8 +63,21 @@ class Application(Frame):
         self.t_black.setDaemon(True)
         self.t_black.start()
 
+    def refresh_buttons(self, b):
+        for (i,j) in b:
+                if self.model.board[i][j] == -1:
+                    icon = self.get_icon(i, j, 1, False)
+                elif self.model.board[i][j] == 1:
+                    icon = self.get_icon(i, j, 0, False)
+                else:
+                    icon = self.get_icon(i, j, 2, False)
+                self.chessButton[i][j].config(image=icon)
+
     def on_click(self, x, y):
-        if self.model.board[x][y] == 0:
+        b = self.model.pick(x,y,self.model.player)
+        if b:
+            self.refresh_buttons(b)
+        if self.model.is_koish(x, y, self.model.player) and self.model.board[x][y] == 0:
             if self.model.player == -1:
                 icon = self.get_icon(x, y, 1, True)
             else:
@@ -80,16 +93,25 @@ class Application(Frame):
                 else:
                     icon = self.get_icon(prev_x, prev_y, 0, False)
                 self.chessButton[prev_x][prev_y].config(image=icon)
+            self.refresh_buttons(b)
             # store new selected location
             self.model.prev_selected = (x, y)
             # clear step timing
             self.model.step_time = 0
             # change player
             self.model.player = -self.model.player
+            if self.model.player == 1:
+                self.player_text.set('Current Player: White')
+            else:
+                self.player_text.set('Current Player: Black')
             # update count
             [self.model.num_white, self.model.num_black] = self.model.count()
             self.num_text_black.set('Black Chess Number: %d' %self.model.num_black)
             self.num_text_white.set('White Chess Number: %d' %self.model.num_white)
+        else:
+            msg = messagebox.showwarning('Warning', 'Illegal move!')
+            print(msg)
+            print(x, y)
 
     def create_widgets(self):
         self.time_label_white = Label(self, textvariable=self.time_text_white)
