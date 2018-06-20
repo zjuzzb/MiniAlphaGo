@@ -2,17 +2,18 @@ from tkinter import *
 from tkinter import messagebox
 import threading
 import time
+from state import State
 
-
-class GoModel():
+class GoModel(State):
     def __init__(self):
-        # black first, -1 for black, 1 for white
-        self.player = -1
-        self.board = [[0 for _ in range(9)] for _ in range(9)]
+        super(GoModel, self).__init__()
         # timing
         self.time_white = 0
         self.time_black = 0
         self.step_time = 0
+        # counting
+        self.num_black = 0
+        self.num_white = 0
         # for convenience
         self.prev_selected = (-1, -1)
 
@@ -48,6 +49,8 @@ class Application(Frame):
         self.chessButton = [[Button(self, bd=0, height=80, width=80, bg='#EBCEAC', image=self.cross_icon[2]) for _ in range(9)] for _ in range(9)]
         self.time_text_black = StringVar(self, 'Black Total: 00:00  Step: 00:00')
         self.time_text_white = StringVar(self, 'White Total: 00:00  Step: 00:00')
+        self.num_text_black = StringVar(self, 'Black Chess Number: 0')
+        self.num_text_white = StringVar(self, 'White Chess Number: 0')
         self.player_text = StringVar(self, 'Current Player: Black')
         # load components
         self.create_widgets()
@@ -83,6 +86,10 @@ class Application(Frame):
             self.model.step_time = 0
             # change player
             self.model.player = -self.model.player
+            # update count
+            [self.model.num_white, self.model.num_black] = self.model.count()
+            self.num_text_black.set('Black Chess Number: %d' %self.model.num_black)
+            self.num_text_white.set('White Chess Number: %d' %self.model.num_white)
 
     def create_widgets(self):
         self.time_label_white = Label(self, textvariable=self.time_text_white)
@@ -91,12 +98,15 @@ class Application(Frame):
         self.time_label_black.grid(row=0, column=6, columnspan=3)
         self.player_label = Label(self, textvariable=self.player_text)
         self.player_label.grid(row=0, column=3, columnspan=3)
-
+        self.num_label_white = Label(self, textvariable=self.num_text_white)
+        self.num_label_white.grid(row=1, column=0, columnspan=3)
+        self.num_label_black = Label(self, textvariable=self.num_text_black)
+        self.num_label_black.grid(row=1, column=6, columnspan=3)
         for i in range(9):
             for j in range(9):
                 self.chessButton[i][j].config(image=self.get_icon(i, j, 2, False))
                 self.chessButton[i][j].config(command=(lambda x, y: lambda: self.on_click(x, y))(i, j))
-                self.chessButton[i][j].grid(row=i + 1, column=j)
+                self.chessButton[i][j].grid(row=i + 2, column=j)
 
     def update_time_text_white(self):
         while True:
